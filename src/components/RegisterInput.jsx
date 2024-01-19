@@ -115,7 +115,7 @@ function RegisterInput({ register }) {
             </div>
             <div className="form-input__email">
                 <MdOutlineEmail className="icon-email" />
-                <input type="email" placeholder="Email" onChange={onEmailChange} />
+                <input type="email" placeholder="Email" value={email} onChange={onEmailChange} />
             </div>
             <div className="form-input__password">
                 <MdOutlineLock className="icon-password" />
@@ -125,7 +125,7 @@ function RegisterInput({ register }) {
                 <MdOutlineLock className="icon-password" />
                 <input type="password" placeholder={locale === "id" ? "Konfirmasi kata sandi" : "Confirm Password"} autoComplete='current-password' value={confirmPassword} onChange={onConfirmPasswordChange} />
             </div>
-            <button>Register</button>
+            <button>{locale === "id" ? "Daftar" : "Signup"}</button>
         </form>
     );
 }

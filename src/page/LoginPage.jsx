@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useContext } from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import LoginInput from "../components/LoginInput";
 import { login } from "../utils/api";
+import LocaleContext from "../contexts/LocaleContext";
 
 function LoginPage({ loginSuccess }) {
+    const { locale } = useContext(LocaleContext);
+
     async function onLogin({ email, password }) {
         const { error, data } = await login({ email, password });
 
@@ -16,11 +19,11 @@ function LoginPage({ loginSuccess }) {
     return (
         <section className="form">
             <div className="box-form">
-                <h2>Sign In</h2>
+                <h2>{locale === "id" ? "Masuk" : "SignIn"}</h2>
                 <LoginInput login={onLogin} />
-                <p>Don`t have an account?
+                <p>{locale === "id" ? "Belum mempunyai akun?" : "Don`t have an account?"}
                     <Link to="/register">
-                        Sign up here
+                        {locale === "id" ? "Daftar" : "Signup"}
                     </Link>
                 </p>
             </div>

@@ -2,6 +2,7 @@
 
 :root {
     --primary: #F5841A;
+    --primary-hover: #d67215;
     --secondary: #F2E8C6;
     --border-primary: #d37218;
     --button-primary: #363636;
@@ -12,9 +13,10 @@
 }
 
 [data-theme="dark"] {
-    --primary: #1A120B;
-    --border-primary: #170c07;
-    --secondary: #3C2A21;
+    --primary: #2D6E7E;
+    --primary-hover: #3c8fa3;
+    --border-primary: #0a272e;
+    --secondary: #153B44;
     --font-color: #eee;
     --background-color: #161616;
     --bg-search: #222;
@@ -62,7 +64,7 @@ body {
 
 .logo-icon {
     outline: 10px;
-    color: #F5841A;
+    color: var(--primary);
     align-self: center;
     font-size: 1.8rem;
 }
@@ -115,6 +117,7 @@ body {
 
 .toggle-profile button {
     font-size: 18px;
+    padding: 0;
 }
 
 .icon-dropdown {
@@ -124,12 +127,12 @@ body {
 }
 
 .toggle-profile__drop-down {
-    position: fixed;
+    position: absolute;
     z-index: 99;
     right: 120px;
     top: 7vh;
-    padding: 11px 18px;
-    width: 240px;
+    width: 210px;
+    padding: 9px 7px;
     border: 1px solid var(--font-color);
     background-color: var(--background-color);
     color: var(--font-color);
@@ -141,8 +144,24 @@ body {
 
 .toggle-profile__drop-down li {
     display: flex;
+    align-items: center;
+    gap: 10px;
     padding: 7px;
     border-bottom: 1px solid var(--font-color);
+}
+
+.toggle-profile__drop-down li .email,
+.toggle-profile__drop-down li .logout {
+    font-size: 22px;
+}
+
+.toggle-profile__drop-down::before {
+    content: "";
+    position: absolute;
+    top: -100px;
+    transform: rotate(45deg);
+
+
 }
 
 .main-container {
@@ -580,7 +599,7 @@ body {
     display: flex;
     align-items: center;
     border-radius: 5px;
-    background-color: #727272;
+    background-color: var(--border-primary);
 }
 
 .form-input__user .icon-user,
@@ -600,14 +619,14 @@ body {
     border: none;
     padding: 11px 8px;
     margin-top: 4px;
-    background-color: var(--button-primary);
-    color: #fff;
+    background-color: var(--primary);
+    color: var(--background-color);
     font-size: 16px;
     border-radius: 5px;
 }
 
 .box-form button:hover {
-    background-color: var(--button-active);
+    background-color: var(--primary-hover);
     cursor: pointer;
 }
 

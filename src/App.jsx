@@ -1,140 +1,134 @@
-import React from "react";
-import { Routes, Route } from "react-router-dom";
+import React, { useState, useEffect, useMemo } from "react";
 import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
+import Loading from "./components/Loading";
 import HomePage from "./page/HomePage";
 import DetailPage from "./page/DetailPage";
 import PageNotFound from "./page/PageNotFound";
 import AddNotePage from "./page/AddNotePage";
+import ArchivesPage from "./page/ArchivesPage";
 import RegisterPage from "./page/RegisterPage";
 import LoginPage from "./page/LoginPage";
-import { ThemeProvider } from "./contexts/ThemeContext";
+import { Routes, Route } from "react-router-dom";
+
 import { LocaleProvider } from "./contexts/LocaleContext";
+import { ThemeProvider } from "./contexts/ThemeContext";
 
 import { getUserLogged, putAccessToken } from "./utils/api";
-import ArchivesPage from "./page/ArchivesPage";
 
-class App extends React.Component {
-    constructor(props) {
-        super(props);
+function App() {
+    const [authedUser, setAuthedUser] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [locale, setLocale] = useState(localStorage.getItem("locale") || "id");
+    const [theme, setTheme] = useState(localStorage.getItem("theme") || "dark");
 
-        this.state = {
-            authedUser: null,
-            initializing: true,
-            localeContext: {
-                locale: localStorage.getItem("locale") || "id",
-                toggleLocale: () => {
-                    this.setState((prevState) => {
-                        const newLocale = prevState.localeContext.locale === "id" ? "en" : "id";
-                        localStorage.setItem("locale", newLocale);
-                        return {
-                            localeContext: {
-                                ...prevState.localeContext,
-                                locale: prevState.localeContext.locale === "id" ? "en" : "id"
-                            }
-                        };
-                    });
-                }
-            },
-            theme: localStorage.getItem("theme") || "light",
-            toggleTheme: () => {
-                this.setState((prevState) => {
-                    const newTheme = prevState.theme === "light" ? "dark" : "light";
-                    localStorage.setItem("theme", newTheme);
-
-                    return {
-                        theme: newTheme
-                    };
-                });
-            }
-        };
-
-        this.onLoginSuccess = this.onLoginSuccess.bind(this);
-        this.onLogout = this.onLogout.bind(this);
-    }
-
-    componentDidUpdate(prevProps, prevState) {
-        if (prevState.theme !== this.state.theme) {
-            document.documentElement.setAttribute("data-theme", this.state.theme);
-        }
-    }
-
-
-    async componentDidMount() {
-        const { data } = await getUserLogged();
-        document.documentElement.setAttribute("data-theme", this.state.theme);
-        this.setState(() => {
-            return {
-                authedUser: data,
-                initializing: false
-            };
+    const toggleLocale = () => {
+        setLocale((prevLocale) => {
+            const newLocale = prevLocale === "id" ? "en" : "id";
+            localStorage.setItem("locale", newLocale);
+            return newLocale;
         });
-    }
+    };
 
-    async onLoginSuccess({ accessToken }) {
+    const toggleTheme = () => {
+        setTheme((prevState) => {
+            const newTheme = prevState === "dark" ? "light" : "dark";
+            localStorage.setItem("theme", newTheme);
+            return newTheme;
+        });
+    };
+
+    const localeContextValue = useMemo(() => {
+        return {
+            locale,
+            toggleLocale,
+        };
+    }, [locale]);
+
+    const themeContextValue = useMemo(() => {
+        return {
+            theme,
+            toggleTheme,
+        };
+    }, [theme]);
+
+    useEffect(() => {
+        async function getData() {
+            return await getUserLogged().then(({ data }) => {
+                setAuthedUser(data);
+                setTimeout(() => {
+                    setLoading(false);
+                }, 1000);
+            });
+        }
+
+        getData();
+    }, []);
+
+    useEffect(() => {
+        document.documentElement.setAttribute("data-theme", theme);
+    }, [theme]);
+
+    async function onLoginSuccess({ accessToken }) {
         putAccessToken(accessToken);
         const { data } = await getUserLogged();
-
-        this.setState(() => {
-            return {
-                authedUser: data,
-            };
-        });
+        setAuthedUser(data);
     }
 
-    onLogout() {
-        this.setState(() => {
-            return {
-                authedUser: null
-            };
-        });
+    function onLogout() {
         putAccessToken("");
+        setAuthedUser(null);
     }
 
-    render() {
-        if (this.state.initializing) {
-            return null;
-        }
+    if (loading) {
+        return (
+            <ThemeProvider value={themeContextValue}>
+                <LocaleProvider value={localeContextValue}>
+                    <Loading />
+                </LocaleProvider>
+            </ThemeProvider>
+        );
+    }
 
-        if (this.state.authedUser === null) {
-            return (
-                <LocaleProvider value={this.state.localeContext}>
+    if (authedUser === null) {
+        return (
+            <ThemeProvider value={themeContextValue}>
+                <LocaleProvider value={localeContextValue}>
                     <header>
-                        {/* <Navbar /> */}
+                        <Navbar logout={onLogout} />
                     </header>
                     <main>
                         <Routes>
-                            <Route path="/*" element={<LoginPage loginSuccess={this.onLoginSuccess} />} />
+                            <Route path="/*" element={<LoginPage loginSuccess={onLoginSuccess} />} />
                             <Route path="/register" element={<RegisterPage />} />
                         </Routes>
-                    </main>
-                </LocaleProvider>
-            );
-        }
-
-        return (
-            <ThemeProvider value={this.state}>
-                <LocaleProvider value={this.state.localeContext}>
-                    <header>
-                        <Navbar logout={this.onLogout} name={this.state.authedUser.name} email={this.state.authedUser.email} />
-                    </header>
-                    <main className="container">
-                        <div className="main-container">
-                            <Sidebar />
-                            <Routes>
-                                <Route path="/" element={<HomePage />} />
-                                <Route path="/archives" element={<ArchivesPage />} />
-                                <Route path="/notes/:id" element={<DetailPage />} />
-                                <Route path="/notes/new" element={<AddNotePage />} />
-                                <Route path="*" element={<PageNotFound />} />
-                            </Routes>
-                        </div>
                     </main>
                 </LocaleProvider>
             </ThemeProvider>
         );
     }
 
+    return (
+        <ThemeProvider value={themeContextValue}>
+            <LocaleProvider value={localeContextValue}>
+                <header>
+                    <Navbar logout={onLogout} name={authedUser.name} email={authedUser.email} />
+                </header>
+                <main className="container">
+                    <div className="main-container">
+                        <Sidebar />
+                        <Routes>
+                            <Route path="/" element={<HomePage />} />
+                            <Route path="/archives" element={<ArchivesPage />} />
+                            <Route path="/notes/:id" element={<DetailPage />} />
+                            <Route path="/notes/new" element={<AddNotePage />} />
+                            <Route path="*" element={<PageNotFound />} />
+                        </Routes>
+                    </div>
+                </main>
+            </LocaleProvider>
+        </ThemeProvider>
+    );
 }
 
 export default App;

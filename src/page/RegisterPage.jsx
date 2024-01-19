@@ -17,11 +17,11 @@ function RegisterPage() {
     return (
         <section className="form">
             <div className="box-form">
-                <h2>{locale === "id" ? "Daftar" : "Register"}</h2>
+                <h2>{locale === "id" ? "Daftar" : "Signup"}</h2>
                 <RegisterInput register={onRegisterHandler} />
                 <p>{locale === "id" ? "Sudah memiliki akun?" : "Already have an account?"}
                     <Link to="/">
-                        {locale === "id" ? "Masuk disini" : "Login here"}
+                        {locale === "id" ? "Masuk" : "SignIn"}
                     </Link>
                 </p>
             </div>
