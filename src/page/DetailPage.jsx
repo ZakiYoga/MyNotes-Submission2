@@ -1,9 +1,10 @@
 import React from "react";
 import NoteDetail from "../components/NoteDetail";
 import EmptyNote from "../components/EmptyNote";
-import { MdSearchOff } from "react-icons/md";
+import { MdOutlineSubtitlesOff } from "react-icons/md";
 import PropTypes from "prop-types";
-import { deleteNote, archiveNote, unarchiveNote, getNote } from "../utils/local-data";
+import Loading from "../components/Loading";
+import { getNote, deleteNote, archiveNote, unarchiveNote } from "../utils/api";
 import { useParams, useNavigate } from "react-router-dom";
 
 function DetailNotePageWrapper() {
@@ -17,51 +18,61 @@ class DetailNotePage extends React.Component {
     super(props);
 
     this.state = {
-      notes: getNote(props.id),
+      notes: null,
+      initializing: true,
     };
 
-    this.onDeleteNotesHandler = this.onDeleteNotesHandler.bind(this);
-    this.onArchiveNotesHandler = this.onArchiveNotesHandler.bind(this);
-    this.onUnarchiveNotesHandler = this.onUnarchiveNotesHandler.bind(this);
+    this.onDeleteHandler = this.onDeleteHandler.bind(this);
+    this.onDeleteHandler = this.onArchivedHandler.bind(this);
   }
 
-  onDeleteNotesHandler(id) {
-    deleteNote(id);
+  async componentDidMount() {
+    const { data } = await getNote(this.props.id);
+    this.setState(() => {
+      return {
+        notes: data,
+        initializing: false,
+      };
+    });
+  }
+
+  async onDeleteHandler(id) {
+    await deleteNote(id);
     this.props.navigate("/");
   }
 
-  onArchiveNotesHandler(id) {
-    archiveNote(id);
+  async onArchivedHandler(id) {
+    this.state.notes.archived ? await unarchiveNote(id) : await archiveNote(id);
     this.props.navigate("/");
-  }
-
-  onUnarchiveNotesHandler(id) {
-    unarchiveNote(id);
-    this.props.navigate("/archives");
   }
 
   render() {
-    return (
-      <>
-        {this.state.notes == null ? (
-          <EmptyNote icon={<MdSearchOff />} title="No results found for the searched note" />
-
-        ) : (
-          <div className="main">
-            <NoteDetail
-              onDelete={this.onDeleteNotesHandler}
-              onArchive={this.onArchiveNotesHandler}
-              onUnarchive={this.onUnarchiveNotesHandler}
-              {...this.state.notes} />
-          </div>
-        )}
-      </>
-    );
+    if (this.state.initializing) {
+      return (
+        <section className="main">
+          <Loading />
+        </section>
+      );
+    }
+    if (this.state.notes) {
+      return (
+        <section className="main">
+          <NoteDetail
+            id={this.props.id}
+            onDelete={this.onDeleteHandler}
+            archived={this.state.notes.archived}
+            onArchive={this.onArchivedHandler}
+            onUnarchive={this.onArchivedHandler}
+            {...this.state.notes} />
+        </section >
+      );
+    }
+    return <EmptyNote icon={<MdOutlineSubtitlesOff />} title="Notes not found" />;
   }
 }
 
 DetailNotePage.propTypes = {
-  id: PropTypes.string.isRequired,
+  id: PropTypes.string,
   navigate: PropTypes.func.isRequired,
 };
 

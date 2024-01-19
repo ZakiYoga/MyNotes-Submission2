@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import RegisterInput from "../components/RegisterInput";
 import { register } from "../utils/api";
+import LocaleContext from "../contexts/LocaleContext";
 
 function RegisterPage() {
+    const { locale } = useContext(LocaleContext);
     const navigate = useNavigate();
 
     async function onRegisterHandler(user) {
@@ -15,11 +17,11 @@ function RegisterPage() {
     return (
         <section className="form">
             <div className="box-form">
-                <h2>Register</h2>
+                <h2>{locale === "id" ? "Daftar" : "Register"}</h2>
                 <RegisterInput register={onRegisterHandler} />
-                <p>Already have an account?
+                <p>{locale === "id" ? "Sudah memiliki akun?" : "Already have an account?"}
                     <Link to="/">
-                        Login here
+                        {locale === "id" ? "Masuk disini" : "Login here"}
                     </Link>
                 </p>
             </div>

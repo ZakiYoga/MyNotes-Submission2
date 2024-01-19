@@ -68,9 +68,9 @@ class NoteInput extends React.Component {
                     value={this.state.title}
                     onChange={this.onTitleChangeEventHandler}
                   />
-                  <div className="date"></div>
                   <div className="note-input__remainingChar">
-                    {showFormattedDate(new Date(), "short")} |{" "}
+                    <div className="date">{showFormattedDate(new Date(), "short")}</div>
+                    |{" "}
                     <b
                       style={{
                         color: this.state.remainingChars <= 10 ? "red" : "green",

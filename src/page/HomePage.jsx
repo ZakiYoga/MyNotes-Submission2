@@ -1,14 +1,14 @@
-import React from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { getActiveNotes, deleteNote, archiveNote } from "../utils/api";
 import NoteList from "../components/NoteList";
 import SearchNote from "../components/SearchBar";
 import { useSearchParams } from "react-router-dom";
-// import PropTypes from "prop-types";
 import LocaleContext from "../contexts/LocaleContext";
 import EmptyNote from "../components/EmptyNote";
 import { MdOutlineSubtitlesOff } from "react-icons/md";
+import Loading from "../components/Loading";
 
-
+// import PropTypes from "prop-types";
 // function NoteAppWrapper() {
 //   const [searchParams, setSearchParams] = useSearchParams();
 //   const search = searchParams.get("search");
@@ -147,14 +147,15 @@ import { MdOutlineSubtitlesOff } from "react-icons/md";
 
 function HomePage() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [notes, setNotes] = React.useState([]);
-  const [keyword, setKeyword] = React.useState(() => {
+  const [notes, setNotes] = useState([]);
+  const [keyword, setKeyword] = useState(() => {
     return searchParams.get("keyword") || "";
   });
+  const [loading, setLoading] = useState(false);
 
-  const { locale } = React.useContext(LocaleContext);
+  const { locale } = useContext(LocaleContext);
 
-  React.useEffect(() => {
+  useEffect(() => {
     getActiveNotes().then(({ data }) => {
       setNotes(data);
     });
@@ -189,6 +190,13 @@ function HomePage() {
     return note.archived === false;
   });
 
+  useEffect(() => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+    }, 500);
+  }, []);
+
   return (
     <section className="main-content">
       <div className="main">
@@ -199,6 +207,13 @@ function HomePage() {
         <div className="title">
           <h2>{locale === "id" ? "Daftar Catatan" : "All Notes"}</h2>
         </div>
+        {loading && (
+          <section className="main-content">
+            <div className="main">
+              <Loading />
+            </div>
+          </section>
+        )}
         {activeNotes.length ? (
           <NoteList
             notes={activeNotes}

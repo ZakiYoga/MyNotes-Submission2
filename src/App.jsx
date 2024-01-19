@@ -3,7 +3,6 @@ import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
 import HomePage from "./page/HomePage";
-import Archives from "./page/Archives";
 import DetailPage from "./page/DetailPage";
 import PageNotFound from "./page/PageNotFound";
 import AddNotePage from "./page/AddNotePage";
@@ -13,6 +12,7 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import { LocaleProvider } from "./contexts/LocaleContext";
 
 import { getUserLogged, putAccessToken } from "./utils/api";
+import ArchivesPage from "./page/ArchivesPage";
 
 class App extends React.Component {
     constructor(props) {
@@ -123,7 +123,7 @@ class App extends React.Component {
                             <Sidebar />
                             <Routes>
                                 <Route path="/" element={<HomePage />} />
-                                <Route path="/archives" element={<Archives />} />
+                                <Route path="/archives" element={<ArchivesPage />} />
                                 <Route path="/notes/:id" element={<DetailPage />} />
                                 <Route path="/notes/new" element={<AddNotePage />} />
                                 <Route path="*" element={<PageNotFound />} />

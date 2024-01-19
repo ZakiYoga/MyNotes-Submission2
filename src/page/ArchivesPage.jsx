@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useState, useEffect, useContext } from "react";
 import SearchNote from "../components/SearchBar";
 import NoteList from "../components/NoteList";
 // import PropTypes from "prop-types";
 import LocaleContext from "../contexts/LocaleContext";
 import { getArchivedNotes, deleteNote, unarchiveNote } from "../utils/api";
-
+import Loading from "../components/Loading";
 
 import EmptyNote from "../components/EmptyNote";
 import { TbArchiveOff } from "react-icons/tb";
@@ -133,14 +133,15 @@ import { useSearchParams } from "react-router-dom";
 
 function ArchivesPage() {
     const [searchParams, setSearchParams] = useSearchParams();
-    const [notes, setNotes] = React.useState([]);
-    const [keyword, setKeyword] = React.useState(() => {
+    const [notes, setNotes] = useState([]);
+    const [keyword, setKeyword] = useState(() => {
         return searchParams.get("keyword") || "";
     });
+    const [loading, setLoading] = useState(false);
 
-    const { locale } = React.useContext(LocaleContext);
+    const { locale } = useContext(LocaleContext);
 
-    React.useEffect(() => {
+    useEffect(() => {
         getArchivedNotes().then(({ data }) => {
             setNotes(data);
         });
@@ -175,6 +176,13 @@ function ArchivesPage() {
         return note.archived === true;
     });
 
+    useEffect(() => {
+        setLoading(true);
+        setTimeout(() => {
+            setLoading(false);
+        }, 500);
+    }, []);
+
     return (
         <section className="main-content">
             <div className="main">
@@ -185,6 +193,9 @@ function ArchivesPage() {
                 <div className="title">
                     <h2>{locale === "id" ? "Arsip" : "Archive"}</h2>
                 </div>
+                {loading && (
+                    <Loading />
+                )}
                 {archivedNotes.length ? (
                     <NoteList notes={archivedNotes} onDelete={onDeleteHandler} onUnarchive={onUnarchiveHandler} />
                 ) : (
