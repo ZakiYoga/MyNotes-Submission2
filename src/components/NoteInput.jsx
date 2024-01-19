@@ -6,7 +6,6 @@ import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { LocaleConsumer } from "../contexts/LocaleContext";
 
-
 class NoteInput extends React.Component {
   constructor(props) {
     super(props);

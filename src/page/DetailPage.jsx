@@ -23,7 +23,7 @@ class DetailNotePage extends React.Component {
     };
 
     this.onDeleteHandler = this.onDeleteHandler.bind(this);
-    this.onDeleteHandler = this.onArchivedHandler.bind(this);
+    this.onArchivedHandler = this.onArchivedHandler.bind(this);
   }
 
   async componentDidMount() {

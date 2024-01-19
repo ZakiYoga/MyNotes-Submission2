@@ -18,7 +18,7 @@ function Navbar({ logout, name, email }) {
     };
 
     const handleLogout = () => {
-        setOpen(false); // Menutup drop-down sebelum logout
+        setOpen(false);
         logout();
     };
 

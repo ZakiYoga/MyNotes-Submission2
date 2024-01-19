@@ -23,8 +23,8 @@ NotesDetail.propTypes = {
     body: PropTypes.string.isRequired,
     archived: PropTypes.bool.isRequired,
     onDelete: PropTypes.func.isRequired,
-    onArchive: PropTypes.func.isRequired,
-    onUnarchive: PropTypes.func.isRequired,
+    onArchive: PropTypes.func,
+    onUnarchive: PropTypes.func,
 };
 
 export default NotesDetail;

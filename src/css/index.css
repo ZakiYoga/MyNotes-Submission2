@@ -384,7 +384,7 @@ body {
     font-size: 1.5rem;
     padding: 4px 7px;
     text-decoration: none;
-    color: #000;
+    color: var(--font-color);
     background-color: transparent;
     border: none;
     gap: 4px;
@@ -498,6 +498,7 @@ body {
     padding: 4px;
     cursor: pointer;
     border: none;
+    color: var(--font-color);
     background-color: transparent;
 }
 
@@ -656,6 +657,7 @@ body {
 }
 
 .PageNotFound__content {
+    text-align: center;
     padding: 5px;
 }
 

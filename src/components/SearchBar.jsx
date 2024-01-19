@@ -1,32 +1,26 @@
-import React from "react";
+import React, { useContext } from "react";
 import PropTypes from "prop-types";
 import { FiSearch } from "react-icons/fi";
-import { LocaleConsumer } from "../contexts/LocaleContext";
+import LocaleContext from "../contexts/LocaleContext";
 
 function SearchNote({ search, onSearchChange }) {
-  return (
-    <LocaleConsumer>
-      {
-        ({ locale }) => {
-          return (
-            <div className="search">
-              <FiSearch className="search-icon" />
-              <input
-                type="search"
-                id="search-note"
-                name="search-note"
-                className="search-input"
-                placeholder={locale === "id" ? "Cari berdasarkan nama" : "Search by Title"}
-                value={search}
-                onChange={(event) => onSearchChange(event.target.value)}
-              />
-            </div>
-          );
-        }
-      }
+  const { locale } = useContext(LocaleContext);
 
-    </LocaleConsumer>
+  return (
+    <div className="search">
+      <FiSearch className="search-icon" />
+      <input
+        type="search"
+        id="search-note"
+        name="search-note"
+        className="search-input"
+        placeholder={locale === "id" ? "Cari berdasarkan nama" : "Search by Title"}
+        value={search}
+        onChange={(event) => onSearchChange(event.target.value)}
+      />
+    </div>
   );
+
 }
 
 SearchNote.propType = {
