@@ -1,5 +1,5 @@
 import React from "react";
-import { showFormattedDate } from "../utils";
+import ShowFormattedDate from "../utils";
 import { FaSave } from "react-icons/fa";
 import { RxReset } from "react-icons/rx";
 import { Link } from "react-router-dom";
@@ -68,7 +68,7 @@ class NoteInput extends React.Component {
                     onChange={this.onTitleChangeEventHandler}
                   />
                   <div className="note-input__remainingChar">
-                    <div className="date">{showFormattedDate(new Date(), "short")}</div>
+                    <div className="date">{ShowFormattedDate(new Date(), "short")}</div>
                     |{" "}
                     <b
                       style={{
